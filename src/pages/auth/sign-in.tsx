@@ -4,7 +4,9 @@ import { z } from 'zod'
 import {Input} from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { toast, Toaster } from 'sonner'
+import { toast } from 'sonner'
+import { Link } from 'react-router-dom'
+
 
 const signInForm = z.object({
     email: z.string().email()
@@ -17,17 +19,22 @@ export function SignIn() {
     
     async function handleSignIn(data: SignInForm) {
         // TODO: Implement sign in logic
-        console.log(data)
-        await new Promise(resolve => setTimeout(resolve, 2000))
+        try {
 
-        toast.success('Enviamos um link de autenticação para seu e-mail.', {
-            action: {
-                label: 'Reenviar',
-                onClick: () => {
-                    handleSignIn(data)
-                },
-            }
-        })
+            console.log(data)
+            await new Promise(resolve => setTimeout(resolve, 2000))
+            
+            toast.success('Enviamos um link de autenticação para seu e-mail.', {
+                action: {
+                    label: 'Reenviar',
+                    onClick: () => {
+                        handleSignIn(data)
+                    },
+                }
+            })
+        } catch {
+            toast.error('Ocorreu um erro ao tentar fazer o login. Tente novamente.')
+        }
 
     }
 
@@ -35,6 +42,11 @@ export function SignIn() {
         <div>
             <Helmet title='Login' />
             <div className='p-8'>
+                <Button variant="ghost" asChild className='absolute right-4 top-8'>
+                <Link to="/sign-up">
+                    Novo estabelecimento
+                </Link>
+                </Button>
                 <div className='w-[350px] flex flex-col justify-center gap-6'>
                     <div  className='flex flex-col gap-2 text-center'>
                         <h1 className='text-2xl font-semibold tracking-tight'>Acessar painel</h1>
