@@ -6,7 +6,7 @@ export function App() {
 
   return (
     <HelmetProvider>
-      <Helmet titleTemplate="%s | pizza.shop"/>
+      <Helmet titleTemplate="%S | pizza.shop"/>
     <RouterProvider router={router}/>
 
     </HelmetProvider>
