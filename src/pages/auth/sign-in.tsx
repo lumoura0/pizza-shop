@@ -1,11 +1,13 @@
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import {Input} from '@/components/ui/input'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { Link } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
+import { signIn } from '@/api/sign-in'
 
 
 const signInForm = z.object({
@@ -15,15 +17,18 @@ const signInForm = z.object({
 type SignInForm = z.infer<typeof signInForm>
 
 export function SignIn() {
-    const { register, handleSubmit, formState: {isSubmitting} } = useForm<SignInForm>()
-    
+    const { register, handleSubmit, formState: { isSubmitting } } = useForm<SignInForm>()
+
+    const { mutateAsync: authenticate } = useMutation({
+        mutationFn: signIn,
+
+    })
+
     async function handleSignIn(data: SignInForm) {
         // TODO: Implement sign in logic
         try {
+            await authenticate({ email: data.email })
 
-            console.log(data)
-            await new Promise(resolve => setTimeout(resolve, 2000))
-            
             toast.success('Enviamos um link de autenticação para seu e-mail.', {
                 action: {
                     label: 'Reenviar',
@@ -43,12 +48,12 @@ export function SignIn() {
             <Helmet title='Login' />
             <div className='p-8'>
                 <Button variant="ghost" asChild className='absolute right-4 top-8'>
-                <Link to="/sign-up">
-                    Novo estabelecimento
-                </Link>
+                    <Link to="/sign-up">
+                        Novo estabelecimento
+                    </Link>
                 </Button>
                 <div className='w-[350px] flex flex-col justify-center gap-6'>
-                    <div  className='flex flex-col gap-2 text-center'>
+                    <div className='flex flex-col gap-2 text-center'>
                         <h1 className='text-2xl font-semibold tracking-tight'>Acessar painel</h1>
                         <p className='text-sm text-muted-foreground'>Acompanhe suas vendas pelo painel do parceiro!</p>
 
@@ -63,7 +68,7 @@ export function SignIn() {
                                 {...register('email', { required: true })}
                             />
                         </div>
- 
+
                         <Button disabled={isSubmitting} type='submit' className='w-full'>Acessar painel</Button>
                     </form>
                 </div>
